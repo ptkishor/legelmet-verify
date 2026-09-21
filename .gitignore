@@ -1,0 +1,39 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment & Secret files
+.env
+.env.local
+.env.*.local
+*.secret
+*.pem
+
+# Scratch & Migration scripts with admin keys
+scripts/
+web/scripts/
+seed_db.mjs
+web/seed_db.mjs
+test_db.mjs
+web/test_db.mjs
