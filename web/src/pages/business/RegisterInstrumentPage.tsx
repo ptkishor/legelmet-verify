@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { supabase } from "@/lib/supabase";
 import { extractNameplateData, type OCRResult } from "@/lib/ocrClient";
-import { INSTRUMENT_CATEGORIES, STATE_DISTRICTS } from "@/lib/constants";
+import { INSTRUMENT_CATEGORIES, STATE_DISTRICTS, DISTRICT_OFFICER_IDS } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -207,6 +207,9 @@ export const RegisterInstrumentPage: React.FC = () => {
 
         if (districtOfficer?.id) {
           assignedOfficerId = districtOfficer.id;
+        } else if (DISTRICT_OFFICER_IDS[district]) {
+          // Direct canonical lookup when client RLS restricts trader read on other profiles
+          assignedOfficerId = DISTRICT_OFFICER_IDS[district];
         } else {
           // Fallback: search by state
           const { data: stateOfficer } = await (supabase.from("profiles") as any)
@@ -219,6 +222,7 @@ export const RegisterInstrumentPage: React.FC = () => {
         }
       } catch (findErr) {
         console.warn("Could not query district officer:", findErr);
+        assignedOfficerId = DISTRICT_OFFICER_IDS[district] || null;
       }
 
       // 3. Automatically create initial Verification Application assigned to the district officer

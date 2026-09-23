@@ -41,6 +41,14 @@ export const STATE_DISTRICTS: Record<string, string[]> = {
   "Uttar Pradesh": ["Lucknow", "Varanasi", "Agra", "Noida"],
 } as const;
 
+/** Canonical Metrology Officer UUID mapping per district for automatic routing */
+export const DISTRICT_OFFICER_IDS: Record<string, string> = {
+  Patna: "4bb73cf2-56f7-4365-b3b8-31308b6257af",
+  Samastipur: "be366d8d-4b91-4a5f-8046-d80042fa8cfd",
+  Siwan: "f4f4d953-e0d0-49c4-900a-66a1902e922d",
+  Vaishali: "6711445c-4fa1-413e-823b-d2f0517b8b2f",
+} as const;
+
 /* ── Instrument Categories ── */
 
 export const INSTRUMENT_CATEGORIES = [

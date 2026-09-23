@@ -132,6 +132,59 @@ CREATE TRIGGER trg_complaints_auto_assign
   EXECUTE FUNCTION auto_assign_complaint();
 
 -- ────────────────────────────────────────────────
+-- 3b. AUTO-ASSIGN APPLICATION TO OFFICER
+-- ────────────────────────────────────────────────
+-- When an application is created without an assigned officer,
+-- automatically assign it to an active officer in the same
+-- district as the linked instrument (or fallback to same state).
+
+CREATE OR REPLACE FUNCTION auto_assign_application()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_district text;
+  v_state    text;
+  v_officer  uuid;
+BEGIN
+  -- Get the instrument's location
+  SELECT district, state INTO v_district, v_state
+    FROM instruments WHERE id = NEW.instrument_id;
+
+  -- Try to find an officer in the same district
+  SELECT id INTO v_officer
+    FROM profiles
+    WHERE role = 'metrology_officer'
+      AND is_active = true
+      AND jurisdiction_state = v_state
+      AND jurisdiction_district = v_district
+    ORDER BY random()
+    LIMIT 1;
+
+  -- Fallback: any officer in the same state
+  IF v_officer IS NULL THEN
+    SELECT id INTO v_officer
+      FROM profiles
+      WHERE role = 'metrology_officer'
+        AND is_active = true
+        AND jurisdiction_state = v_state
+      ORDER BY random()
+      LIMIT 1;
+  END IF;
+
+  IF v_officer IS NOT NULL THEN
+    NEW.assigned_officer_id := v_officer;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER trg_applications_auto_assign
+  BEFORE INSERT ON applications
+  FOR EACH ROW
+  WHEN (NEW.assigned_officer_id IS NULL)
+  EXECUTE FUNCTION auto_assign_application();
+
+-- ────────────────────────────────────────────────
 -- 4. PROFILE CREATION ON SIGNUP
 -- ────────────────────────────────────────────────
 -- When a new user signs up via Supabase Auth, automatically
