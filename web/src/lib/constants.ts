@@ -123,6 +123,9 @@ export const APP_TAGLINE =
   "Building Trust, Traceability & Transparency in Legal Metrology";
 
 export const PUBLIC_URL =
-  import.meta.env.VITE_PUBLIC_URL || "http://localhost:5173";
+  import.meta.env.VITE_PUBLIC_URL ||
+  (typeof window !== "undefined" && window.location.origin && !window.location.origin.includes("localhost")
+    ? window.location.origin
+    : "https://legelmet-verify.vercel.app");
 export const OCR_SERVICE_URL =
   import.meta.env.VITE_OCR_SERVICE_URL || "http://localhost:8000";

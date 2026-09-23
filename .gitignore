@@ -37,3 +37,6 @@ seed_db.mjs
 web/seed_db.mjs
 test_db.mjs
 web/test_db.mjs
+
+# Sensitive credentials documentation
+TEST_CREDENTIALS.md

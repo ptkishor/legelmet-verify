@@ -12,6 +12,7 @@
 
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import QRCode from "qrcode";
+import { PUBLIC_URL } from "@/lib/constants";
 
 export interface CertificatePdfData {
   certificateNo: string;
@@ -71,7 +72,7 @@ export async function generateCertificatePdfBytes(
   const fontItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
   // 3. Generate QR code as PNG data URL
-  const verifyUrl = `${window.location.origin}/verify/${cleanAscii(data.digitalId)}`;
+  const verifyUrl = `${PUBLIC_URL}/verify/${cleanAscii(data.digitalId)}`;
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
     margin: 1,
     width: 250,
